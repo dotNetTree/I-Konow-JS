@@ -7236,7 +7236,7 @@ public class Eden {
 
  &lt;script&gt;
 
-    function Human () { 
+    function Human () {
         console.log("인간이 생성되었습니다.");
     }
 
@@ -7263,7 +7263,7 @@ class Human {
     }
 
     // setter
-    public void setName(String name) {  
+    public void setName(String name) {
         this._name = name;
     }
 
@@ -7331,7 +7331,7 @@ class Human {
     }
 
     // setter
-    public void setName(String name) {  
+    public void setName(String name) {
         this._name = name;
     }
 
@@ -7436,7 +7436,7 @@ class Human extends Animal {    // Human은 Animal을 상속함.
     }
 
     // setter
-    public void setName(String name) {  
+    public void setName(String name) {
         this._name = name;
     }
 
@@ -7545,7 +7545,7 @@ class Animal {
     }
 
     // setter
-    public void setName(String name) {  
+    public void setName(String name) {
         this._name = name;
     }
 
@@ -7676,7 +7676,7 @@ class Human extends Animal {    // Human은 Animal을 상속함.
 
     public void walk() {    // Override
         System.out.println("이족보행을 합니다.");
-    } 
+    }
 
 }
 
@@ -7745,7 +7745,7 @@ class Human extends Animal {    // Human은 Animal을 상속함.
     public void walk() {    // Override
         super.walk();                           // 부모의 method를 호출!
         System.out.println("이족보행을 합니다.");
-    } 
+    }
 
 }
 ...
@@ -7776,11 +7776,11 @@ class Human extends Animal {    // Human은 Animal을 상속함.
     for (var key in source) {
         target[key] = source[key];
     }
-    return target; 
+    return target;
 };
 </code></pre>
 
-<p>Object.extend는 source를 target으로 shollow copy를 해주는 코드입니다. 간단하게 이야기하면 target에 source를 넣어서 병합한 결과를 다시 target으로 만드는 code입니다. jQuery를 사용하신다면 $.extend를 사용하시면 됩니다.</p>
+<p>Object.extend는 source를 target으로 shallow copy를 해주는 코드입니다. 간단하게 이야기하면 target에 source를 넣어서 병합한 결과를 다시 target으로 만드는 code입니다. jQuery를 사용하신다면 $.extend를 사용하시면 됩니다.</p>
 
 <p>이제 이 convenience function을 이용해서 그동안 작성한 JS 코드를 정리합시다.</p>
 
@@ -7791,7 +7791,7 @@ class Human extends Animal {    // Human은 Animal을 상속함.
         for (var key in source) {
             target[key] = source[key];
         }
-        return target; 
+        return target;
     };
 
     function Animal () {
@@ -7888,7 +7888,7 @@ class Dog extends Animal implements IDog {  // Dog은 Animal을 상속하고 IDo
         for (var key in source) {
             target[key] = source[key];
         }
-        return target; 
+        return target;
     };
 
     var DogBehavior = {
@@ -7921,7 +7921,7 @@ interface IDog {    // 인터페이스 선언
 
 ...
 
-class DogImpl implements IDog { 
+class DogImpl implements IDog {
 
     public void bark () {   // IDog의 method 구현
         System.out.println("왕왕");
@@ -8018,7 +8018,7 @@ class Animal {
     }
 
     // setter
-    public void setName(String name) {  
+    public void setName(String name) {
         this._name = name;
     }
 
@@ -8046,7 +8046,7 @@ class Human extends Animal {
     public void walk() {
         super.walk();
         System.out.println("이족보행을 합니다.");
-    } 
+    }
 
 }
 
@@ -8087,7 +8087,7 @@ public class Eden {
         human.setName("아담");
         System.out.println(human.getName());
         human.breathe();
-        human.walk();       
+        human.walk();
 
         Dog dog = new Dog();
         System.out.println(dog);
