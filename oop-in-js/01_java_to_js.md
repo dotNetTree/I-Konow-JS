@@ -697,7 +697,7 @@ Object.extend = Object.extend || function (target, source) {
 	return target; 
 };
 ```
-Object.extend는 source를 target으로 shollow copy를 해주는 코드입니다. 간단하게 이야기하면 target에 source를 넣어서 병합한 결과를 다시 target으로 만드는 code입니다. jQuery를 사용하신다면 $.extend를 사용하시면 됩니다.
+Object.extend는 source를 target으로 shallow copy를 해주는 코드입니다. 간단하게 이야기하면 target에 source를 넣어서 병합한 결과를 다시 target으로 만드는 code입니다. jQuery를 사용하신다면 $.extend를 사용하시면 됩니다.
 
 이제 이 convenience function을 이용해서 그동안 작성한 JS 코드를 정리합시다.
 
