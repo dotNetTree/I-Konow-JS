@@ -1115,6 +1115,6 @@ public class Eden {
 ## 마무리
 이러한 식으로 JS 코드를 작성하는 것이 생소하실 수도 있습니다. 아마 event listener를 설정하고 function에서 function으로 이동하는 형태로 개발을 하셨을 텐데, 제 눈에는 그런 식의 개발은 거의 (그 어렵다는) **C언어에 가까운 개발방식**입니다. 아마 해보신 분은 아시겠지만, C언어에서의 **관심사 분리**는 정말 힘든 논제입니다. 이 이야기는 코드를 작성하면 작성할 수록 **스파게티 코드화**가 될 가능성이 높아진다는 것을 의미하고, 결국 개발 퍼포먼스 하락과 유지보수 비용의 증가라는 악영향을 끼칠 가능성이 있습니다. (기술적 부채 증가)
 
-이건 사견입니다만, 종국에는 JS쪽도 [OOA&D](https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design)의 전장이 될 것이라 봅니다. (뭐 이미 server-side는...) Big-Picture를 누가 잘그리냐에 따라 성패가 갈리게 되는거죠. React니 Angular니 하는 굴찍한 [SPA framework](https://en.wikipedia.org/wiki/Single-page_application)를 도입하지 않아도 말이지요.
+이건 사견입니다만, 종국에는 JS쪽도 [OOA&D](https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design)의 전장이 될 것이라 봅니다. (뭐 이미 server-side는...) Big-Picture를 누가 잘그리냐에 따라 성패가 갈리게 되는거죠. React니 Angular니 하는 굵직한 [SPA framework](https://en.wikipedia.org/wiki/Single-page_application)를 도입하지 않아도 말이지요.
 
 그리고, 이번에 소개 해드린 내용은 JS에서 사용하는 OOP 작성법 중 일부를 소개해 드린 것에 불과합니다. 은닉화, private method 선언법 등등 Java에서 사용되는 기본적인 내용과 JS 프로토 타입 확장시 퍼포먼스 향상을 위한 캐슁 활용법 또한 빠져있습니다. 이는 나중에 시간이 나면 차차 설명 드리는 것으로 하고 이번 글을 마치겠습니다.
