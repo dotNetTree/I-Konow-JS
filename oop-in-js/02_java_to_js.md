@@ -17,7 +17,7 @@ class Human extends Animal {
 	
 	public Human () {
 		this.setName(Human.DEFAULT_NAME);
-		System.out.println("임간이 생성되었습니다.");
+		System.out.println("인간이 생성되었습니다.");
 	}
 	
 	public void walk() {
@@ -71,9 +71,9 @@ public class Eden {
 	
 	var huamn = new Huamn();
 	console.log(human);
-	console.log(human.getName);		// 출룍 - 아담
+	console.log(human.getName);		// 출력 - 아담
 	human.setName("이브");
-	console.log(human.getName);		// 출룍 - 이브
+	console.log(human.getName);		// 출력 - 이브
 	
 	...
 	
@@ -101,7 +101,7 @@ class Human extends Animal {
 	
 	public Human () {
 		this.setName(Human.DEFAULT_NAME);
-		System.out.println("임간이 생성되었습니다.");
+		System.out.println("인간이 생성되었습니다.");
 	}
 	
 	public void walk() {
@@ -159,10 +159,10 @@ public class Eden {
 	
 	var huamn = new Huamn();
 	console.log(human);
-	console.log(human.getName);		// 출룍 - 아담
+	console.log(human.getName);		// 출력 - 아담
 	Human.whoAmI(human);			// 출력 - 저의 이름은 아담입니다.
 	human.setName("이브");
-	console.log(human.getName);		// 출룍 - 이브
+	console.log(human.getName);		// 출력 - 이브
 	Human.whoAmI(human);			// 출력 - 저의 이름은 이브입니다.
 	
 	...
