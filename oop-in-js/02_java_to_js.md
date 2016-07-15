@@ -864,4 +864,7 @@ JS full-source를 확인하시길 원하신다면 [여기](./02_java_to_js_res/)
 >
 
 
+--------
+[다음글 [Module Pattern 그리고...]](03_module_pattern_and_....md)
+
 
