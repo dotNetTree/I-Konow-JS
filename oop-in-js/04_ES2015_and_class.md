@@ -304,3 +304,5 @@ class Dog extends Animal {
 }
 
 ```
+
+## 특수화(Specialization)
