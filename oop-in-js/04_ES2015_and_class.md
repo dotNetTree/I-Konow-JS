@@ -28,7 +28,7 @@
 
 ![그림 4](04_ES2015_and_class/3.png)
 
-마지막으로 3영역 중 가장 아랫부분은 class가 할 수 있는 `행위(methods)`를 정의하는 영역입니다. 메소드 명을 적은 후 괄호(())를 붙여줍니다. setName이나 setAge와 같이 괄호 안에 무언가가 적혀 있는데, 이를 **인자**(arguments 또는 parameter)라 부르며 실해 메소드가 동작할 때 입력 받아야 하는 내용입니다. 또 getName이나 getAge와 같이 괄호 뒤에 콜론(:)이 붙어 있는 경우도 있는데, 이는 메소드가 실행되면 반환해야 하는 값의 타입을 기술한 것입니다. 
+마지막으로 3영역 중 가장 아랫부분은 class가 할 수 있는 `행위(methods)`를 정의하는 영역입니다. 메소드 명을 적은 후 괄호(())를 붙여줍니다. setName이나 setAge와 같이 괄호 안에 무언가가 적혀 있는데, 이를 **인자**(arguments 또는 parameter)라 부르며 실제 메소드가 동작할 때 입력 받아야 하는 내용입니다. 또 getName이나 getAge와 같이 괄호 뒤에 콜론(:)이 붙어 있는 경우도 있는데, 이는 메소드가 실행되면 반환해야 하는 값의 타입을 기술한 것입니다. 
 <br/>
 
 ## 그린 그림을 코드로 옮기기(1)
@@ -306,3 +306,115 @@ class Dog extends Animal {
 ```
 
 ## 특수화(Specialization)
+현재 상태로 보면 `인간`은 `동물`과 동일합니다. `인간`이란 일반적인 `동물`과 비교하여 **특별한 어떠한 행위를 할 수 있기 때문에 인간**이라 칭할 수 있습니다. 자, 어떤게 있을까요? 
+
+저는 **"말을 할 수 있다(speak)"**라는 행위를 하기 때문에 인간이라 생각합니다. 이것을 class diagram으로 표현해보겠습니다.
+
+![그림 6](04_ES2015_and_class/6.png)
+
+같은 논리로... `개`는 일반적인 `동물`과 다르게 **어떠한 특별한 행위**를 할 수 있을까요? 
+
+저는 **"짖는다(bark)"**라는 행위를 하기 떄문이라 생각합니다. 이것도 class diagram으로 표현해보겠습니다.
+
+![그림 7](04_ES2015_and_class/7.png)
+
+이와같이 `인간`과 `개`는 `동물`과 비교하면 무언가 특별합니다. 이를 가르켜 `특수화(Specialization)` 되었다고 합니다.
+
+## 그린 그림을 코드로 옮기기(4)
+다시 위 class diagram에 기초한 코드를 ES3(or 5) spec으로 표현하면 다음과 같습니다.
+
+```
+/* ES3(or 5) Spec */
+
+function Animal () {
+	this.name = null;
+	this.age = null;
+	console.log("Animal이 생성됩니다.");
+}
+Animal.prototype.breathe = function () {
+	console.log("숨을 쉽니다.");
+}
+Animal.prototype.walk = function () {
+	console.log("걷습니다.");
+}
+Animal.prototype.setName = function (name) {
+	this.name = name;
+}
+Animal.prototype.getName = function () {
+	return this.name;
+}
+Animal.prototype.setAge = function (age) {
+	this.age = age;
+}
+Animal.prototype.getAge = function () {
+	return this.age;
+}
+
+function Human () {
+}
+Human.prototype = new Animal();	
+Human.prototype.speak = function () {
+	console.log("말을 합니다.");
+}
+
+function Dog () {
+}
+Dog.prototype = new Animal();
+Dog.prototype.bark = function () {
+	console.log("짖습니다.");
+}
+
+```
+
+마찬가지로 위 class diagram을 기준으로 ES2015 spec으로 코드를 작성하면 다음과 같이 됩니다.
+
+```
+/* ES2015 Spec */
+
+class Animal {
+
+	constructor () {
+		this.name = null;
+		this.age = null;
+		console.log("Animal이 생성됩니다.");
+	}
+	
+	breathe () {
+		console.log("숨을 쉽니다.");
+	}
+	
+	walk () {
+		console.log("걷습니다.");
+	}
+	
+	setName (name) {
+		this.name = name;
+	}
+	
+	getName () {
+		return this.name;
+	}
+	
+	setAge (age) {
+		this.age = age;
+	}
+	
+	getAge () {
+		return this.age;
+	}
+	
+}
+
+class Human extends Animal {
+	speak () {
+		console.log("말을 합니다.");
+	}
+}
+
+class Dog extends Animal {
+	bark () {
+		console.log("짖습니다.");
+	}
+}
+
+```
