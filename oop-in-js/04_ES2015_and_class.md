@@ -310,13 +310,13 @@ class Dog extends Animal {
 
 저는 **"말을 할 수 있다(speak)"**라는 행위를 하기 때문에 인간이라 생각합니다. 이것을 class diagram으로 표현해보겠습니다.
 
-![그림 6](04_ES2015_and_class/6.png)
+![그림 7](04_ES2015_and_class/6.png)
 
 같은 논리로... `개`는 일반적인 `동물`과 다르게 **어떠한 특별한 행위**를 할 수 있을까요? 
 
 저는 **"짖는다(bark)"**라는 행위를 하기 떄문이라 생각합니다. 이것도 class diagram으로 표현해보겠습니다.
 
-![그림 7](04_ES2015_and_class/7.png)
+![그림 8](04_ES2015_and_class/7.png)
 
 이와같이 `인간`과 `개`는 `동물`과 비교하면 무언가 특별합니다. 이를 가르켜 `특수화(Specialization)` 되었다고 합니다.
 
@@ -418,3 +418,221 @@ class Dog extends Animal {
 }
 
 ```
+
+# 실체화(Realization)
+여기에서 `개인간`(DogHuman)을 만들어보도록 하겠습니다. (아마 다들 자의던 타의던 이 `class`의 인스턴스가 되어 보신 경험은 한번씩 있으실 것이라 믿습니다. ^^a) class diagram으로 표현 하면 다음과 같이 됩니다.
+
+
+![그림 9](04_ES2015_and_class/8.png)
+
+완성했습니다. 정말 쉽죠? `개인간`은 `개`와 `인간`의 행위를 동시에 하므로 `인간`과 `개`를 동시에 상속 받는 것으로 끝납니다.　이를 **다중상속**이라 하는데, 다중상속은 약간의 트러블을 유발할 여지가 있습니다. 이러한 문제를 **"죽음의 다이아몬드"**라 부르는데 자세한 설명은 [wikipedia](https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem)를 확인해 보시길 바랍니다. 그냥 문제가 생길 여지가 있으니 깔끔하게 다중상속을 하지않는 방법을 사용하겠습니다.
+
+다시, 사고(思考)를 집중해서 `개인간`은 `인간`에 가까운지, `개`에 가까운지 판단을 해야합니다. 저는 일단 `인간`에 가깝다고 하겠습니다. 그럼 `개인간`은 `인간`을 **상속**해야합니다.
+
+![그림 10](04_ES2015_and_class/9.png)
+
+이제 `개인간`은 `인간`의 모든 행위를 합니다. 그리고 `개인간`은 `개`의 행위도 해야 하는데, 상속으로 처리를 못하기 때문에 `개`자체의 정의를 바꿔야 합니다. 일단 `개`의 행위만을 따로 빼냅니다. 그리고, 빼낸 행위를 다음과 같이 표현합니다. 
+
+![그림 11](04_ES2015_and_class/10.png)
+
+위 그림에서 `DogBehavior`라는 이름으로 된 사각형을 **인터페이스(interface)**라 부릅니다. 인터페이스(interface)는 속성(attribute)을 가지지 않고 **오직 행위(method)**만을 가지며, 구현코드를 가지지않고 정의만 합니다.(java같은 언어는 말이죠...) 그래서 `개(Dog) class`가 bark를 구현하게 되고, 이를 가르켜 **"인터페이스 DogBehavior를 Dog class가 실체화 하였다."**라고 합니다.
+
+같은 사고(思考)로 `개인간` 또한 인터페이스를 실체화 시켜주면 됩니다. 도식으로 표현하면 다들 예상하시는 것처럼 다음과 같이 됩니다.
+
+![그림 12](04_ES2015_and_class/11.png)
+
+## 그린 그림을 코드로 옮기기(5)
+위에서 설명하기론 인터페이스는 오직 행위만을 가지며, 구현코드 가지지않고 정의만 한다고 하였습니다만, JS는 Swift의 protocol extionsions와 같이 **인터페이스가 구현코드를 가지게 됩니다**.
+
+ES3(or 5)에서 위 class diagram 지난번에 소개한 Object.extend를 활용하겠습니다. Object.extend는 2개의 object를 인자로 받으며 첫번째 인자에 두번째 인자의 프로퍼티를 복사해주는 기능을 합니다.
+
+```
+/* ES3(or 5) Spec */
+
+Object.extend = Object.extend || function (obj1, obj2) {
+	for (var key in obj2) {
+		obj1[key] = obj2[key];
+	}
+	return obj1;
+};
+
+function Animal () {
+	this.name = null;
+	this.age = null;
+	console.log("Animal이 생성됩니다.");
+}
+Animal.prototype.breathe = function () {
+	console.log("숨을 쉽니다.");
+}
+Animal.prototype.walk = function () {
+	console.log("걷습니다.");
+}
+Animal.prototype.setName = function (name) {
+	this.name = name;
+}
+Animal.prototype.getName = function () {
+	return this.name;
+}
+Animal.prototype.setAge = function (age) {
+	this.age = age;
+}
+Animal.prototype.getAge = function () {
+	return this.age;
+}
+
+function Human () {
+}
+Human.prototype = new Animal();	
+Human.prototype.speak = function () {
+	console.log("말을 합니다.");
+}
+
+// 인터페이스...
+var DogBehavior = {
+	bark: function () {
+		console.log("짖습니다.");
+	}
+};
+
+function Dog () {
+}
+Dog.prototype = new Animal();
+Dog.prototype = Object.extend(Dog.prototype, DogBehavior); // 인터페이스 실체화
+
+function DogHuman () {
+}
+DogHuman.prototype = new Human();
+DogHuman.prototype = Object.extend(DogHuman.prototype, DogBehavior); // 인터페이스 실체화
+
+/* test */
+var dogHuman1 = new DogHuman();
+dogHuman1.speak();	// 출력 - 말을 합니다.
+dogHuman1.bark();	// 출력 - 짖습니다.
+
+```
+이러한 식으로 `class`를 확장하는 방법을 JS에서는 **mixins**이라 합니다.
+
+ES2015에서는 이러한 mixins이 꽤 제약이 많지만 구현하는 방법이 존재합니다. ([여기](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)에 잘 소개되어 있슴.)
+
+```
+/* ES2015 Spec */
+
+class Animal {
+
+	constructor () {
+		this.name = null;
+		this.age = null;
+		console.log("Animal이 생성됩니다.");
+	}
+
+	breathe () {
+		console.log("숨을 쉽니다.");
+	}
+
+	walk () {
+		console.log("걷습니다.");
+	}
+
+	setName (name) {
+		this.name = name;
+	}
+
+	getName () {
+		return this.name;
+	}
+
+	setAge (age) {
+		this.age = age;
+	}
+
+	getAge () {
+		return this.age;
+	}
+
+}
+
+class Human extends Animal {
+	speak () {
+		console.log("말을 합니다.");
+	}
+}
+
+var DogBehaviorMixin = function (Base) {
+	return class DogBehavior extends Base {
+		bark () {
+			console.log("짖습니다.");
+		}
+	}
+};
+
+class Dog extends DogBehaviorMixin(Animal) {
+}
+
+class DogHuman extends DogBehaviorMixin(Human) {
+
+}
+
+/* test */
+var dogHuman1 = new DogHuman();
+dogHuman1.speak();	// 출력 - 말을 합니다.
+dogHuman1.bark();		// 출력 - 짖습니다.
+		
+		
+```
+
+...이건 다른 언어 경험자들이 봤을 때 굉장히 엽기적인 코드입니다. `extends` 대상을 어떠한 function의 return으로 받는 이런 형태는 Java Base의 개발자들에게는 굉장한 스트레스를 안겨주기에 충분합니다. 
+
+그리고 실제 DogBehaviorMixin을 다음과 같이 바꾸어도 정상 동작합니다.
+
+```
+/* ES2015 Spec */
+
+var DogBehaviorMixin = function (Base) {
+
+	Base.prototype = Object.extend(Base.prototype, {
+		bark: function () {
+			console.log("짖습니다.");
+		}
+	});
+
+	return Base;
+};
+
+```
+
+즉, ES2015 Spec에서의 `extends` 키워드는 prototype을 확장해주는 **mixins**처럼 작동되고 있음을 알 수 있습니다.(아, 잘모르시겠다구요? 그럼 그냥 느껴주세요. 이 이상 쉽게 설명을 못하겠....) 
+더불어 하나 더 알 수 있는 것은 `extends` 뒤에 붙는 다른 `class`가 `prototype`이 존재하는 `function`이면 된다는 것입니다.
+
+다음 코드를 봐주세요.
+
+```
+/* ES2015 Spec with ES5 */
+
+function TT () {
+}
+TT.prototype.huk = function () {
+	console.log("TT huk!!!");
+};
+
+
+class FF extends TT {
+	huk () {
+		console.log("FF huk!!!");
+		super.huk();
+	}
+}
+
+let ff = new FF();
+ff.huk();
+		
+```
+이게 동작이 될 까요? 네... 이거 동작합니다. 이게 chrome에서만 동작하는 것인지는 더 확인 해봐야겠지만, 여기까지 해본 결과 얻을 수 있는 결론은 (ES2015를 집중적으로 하고 계시는 다른 JS개발자들이 늘 이야기하는...) 
+
+**"`class`,`extends`는 그냥 ES5때 사용하던 사용하던 mixins의 문법 설탕(syntatic sugar)이다."**
+
+입니다.
+
+자, 그럼 더 이상 `class`와 `extends` 구문을 겁낼 이유가 없으며, 다음과 같이 이해하면 편할 것 같습니다.
+ 
+![그림 13](04_ES2015_and_class/12.png)
+
