@@ -575,12 +575,12 @@ class DogHuman extends DogBehaviorMixin(Human) {
 /* test */
 var dogHuman1 = new DogHuman();
 dogHuman1.speak();	// 출력 - 말을 합니다.
-dogHuman1.bark();		// 출력 - 짖습니다.
+dogHuman1.bark();	// 출력 - 짖습니다.
 		
 		
 ```
 
-...이건 다른 언어 경험자들이 봤을 때 굉장히 엽기적인 코드입니다. `extends` 대상을 어떠한 function의 return으로 받는 이런 형태는 Java Base의 개발자들에게는 굉장한 스트레스를 안겨주기에 충분합니다. 
+...이건 다른 언어 경험자들이 봤을 때 굉장히 엽기적인 코드입니다. `extends` 대상을 어떠한 function의 return으로 받는 이런 형태는 Java Base의 개발자들에게 굉장한 스트레스를 안겨주기에 충분합니다. 
 
 그리고 실제 DogBehaviorMixin을 다음과 같이 바꾸어도 정상 동작합니다.
 
@@ -600,7 +600,7 @@ var DogBehaviorMixin = function (Base) {
 
 ```
 
-즉, ES2015 Spec에서의 `extends` 키워드는 prototype을 확장해주는 **mixins**처럼 작동되고 있음을 알 수 있습니다.(아, 잘모르시겠다구요? 그럼 그냥 느껴주세요. 이 이상 쉽게 설명을 못하겠....) 
+즉, ES2015 Spec에서의 `extends` 키워드는 prototype을 확장해주는 **mixins**처럼 작동되고 있음을 알 수 있습니다.(아, 잘 모르시겠다구요? 그럼 그냥 느껴주세요. 이 이상 쉽게 설명을 못하겠....) 
 더불어 하나 더 알 수 있는 것은 `extends` 뒤에 붙는 다른 `class`가 `prototype`이 존재하는 `function`이면 된다는 것입니다.
 
 다음 코드를 봐주세요.
@@ -614,7 +614,6 @@ TT.prototype.huk = function () {
 	console.log("TT huk!!!");
 };
 
-
 class FF extends TT {
 	huk () {
 		console.log("FF huk!!!");
@@ -626,7 +625,9 @@ let ff = new FF();
 ff.huk();
 		
 ```
-이게 동작이 될 까요? 네... 이거 동작합니다. 이게 chrome에서만 동작하는 것인지는 더 확인 해봐야겠지만, 여기까지 해본 결과 얻을 수 있는 결론은 (ES2015를 집중적으로 하고 계시는 다른 JS개발자들이 늘 이야기하는...) 
+일반 `function`을 `extends` 키워드를 사용하여 상속했는데 이게 동작할까요? 
+
+네... 이거 동작합니다. 이게 chrome에서만 동작하는 것인지는 더 확인 해봐야겠지만, 여기까지 해본 결과 얻을 수 있는 결론은 (ES2015를 집중적으로 하고 계시는 다른 JS개발자들이 늘 이야기하는...) 
 
 **"`class`,`extends`는 그냥 ES5때 사용하던 사용하던 mixins의 문법 설탕(syntatic sugar)이다."**
 
@@ -635,4 +636,63 @@ ff.huk();
 자, 그럼 더 이상 `class`와 `extends` 구문을 겁낼 이유가 없으며, 다음과 같이 이해하면 편할 것 같습니다.
  
 ![그림 13](04_ES2015_and_class/12.png)
+
+여기서 잠깐! Java의 인터페이스 구현 코드를 보고 가겠습니다.
+
+```
+class DogHuman extends Human implements DogBehavior {
+
+	...
+
+}
+```
+네, 꽤 깁니다. 하지만 어떤 클래스를 base로 하는지 확실하게 알 수 있고 어떤 부분이 인터페이스인지 확실하게 알 수 있습니다. 다시 저희가 짠 코드를 확인해보렊습니다.
+
+```
+
+class DogHuman extends DogBehaviorMixin(Human) {
+
+	...
+	
+}
+
+```
+
+미려하지 않습니다. 어느것이 base class인지 알기가 어렵습니다. 이에 대한 제안으로 [Justin Fagnani](http://justinfagnani.com/author/justinfagnani/)의 블로그 내용을 소개해 드리겠습니다. 블로그 내용상으로 볼땐 dart `with` 키워드 처럼 mixins가 동작되도록 하는 건데 다음과 같이 바뀌게 하는 겁니다.
+
+
+```
+
+class DogHuman extends mix(Human).with(DogBehavior) {
+
+	...
+	
+}
+
+```
+
+와우! 가독성이 엄청 좋아집니다. base class를 Human으로 하고 DogBehavior를 인터페이스로 한 형태라고 짐작할 수 있는 문법입니다. 저는 이런 식의 아름다운 문법 만들어낼 수 있는게 바로 JS의 참 맛이라 생각합니다.
+
+```
+
+class MixinBuilder {  
+
+  constructor(superclass) {
+    this.superclass = superclass;
+  }
+
+  with(...mixins) { 
+    return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+  }
+}
+
+let mix = function (superclass) {
+
+	return new MixinBuilder(superclass);
+
+}
+
+```
+
+
 
