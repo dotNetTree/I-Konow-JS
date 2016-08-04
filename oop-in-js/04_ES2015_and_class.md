@@ -640,6 +640,7 @@ ff.huk();
 여기서 잠깐! Java의 인터페이스 구현 코드를 보고 가겠습니다.
 
 ```
+/* 갑자기 Java!!! */
 class DogHuman extends Human implements DogBehavior {
 
 	...
@@ -649,7 +650,7 @@ class DogHuman extends Human implements DogBehavior {
 네, 꽤 깁니다. 하지만 어떤 클래스를 base로 하는지 확실하게 알 수 있고 어떤 부분이 인터페이스인지 확실하게 알 수 있습니다. 다시 저희가 짠 코드를 확인해보렊습니다.
 
 ```
-
+/* ES2015 Spec */
 class DogHuman extends DogBehaviorMixin(Human) {
 
 	...
@@ -658,10 +659,13 @@ class DogHuman extends DogBehaviorMixin(Human) {
 
 ```
 
-미려하지 않습니다. 어느것이 base class인지 알기가 어렵습니다. 이에 대한 제안으로 [Justin Fagnani](http://justinfagnani.com/author/justinfagnani/)의 블로그 내용을 소개해 드리겠습니다. 블로그 내용상으로 볼땐 dart `with` 키워드 처럼 mixins가 동작되도록 하는 건데 다음과 같이 바뀌게 하는 겁니다.
+미려하지 않습니다. 어느것이 base class인지 알기가 어렵습니다. 
+
+이에 대한 제안으로 [Justin Fagnani](http://justinfagnani.com/author/justinfagnani/)의 블로그 내용을 소개해 드리겠습니다. 블로그 내용상으로 볼땐 Dart 언어의 `with` 키워드 처럼 mixins가 동작되도록 하는건데, 적용하면 문법이 이렇게 바뀝니다..
 
 
 ```
+/* ES2015 Spec */
 
 class DogHuman extends mix(Human).with(DogBehavior) {
 
@@ -671,9 +675,12 @@ class DogHuman extends mix(Human).with(DogBehavior) {
 
 ```
 
-와우! 가독성이 엄청 좋아집니다. base class를 Human으로 하고 DogBehavior를 인터페이스로 한 형태라고 짐작할 수 있는 문법입니다. 저는 이런 식의 아름다운 문법 만들어낼 수 있는게 바로 JS의 참 맛이라 생각합니다.
+와우! 가독성이 엄청 좋아졌습니다. base class를 Human으로 하고 DogBehavior를 인터페이스로 한 형태라고 짐작할 수 있는 문법입니다. 게다가 미려하기까지합니다. 저는 이런 식의 아름다운 문법 만들어낼 수 있는게 바로 JS의 참 맛이라 생각합니다.
+
+이 아름다운 문법을 만들기 위해서는 다음과 같은 코드가 필요합니다.
 
 ```
+/* ES2015 spec */
 
 class MixinBuilder {  
 
@@ -686,13 +693,141 @@ class MixinBuilder {
   }
 }
 
-let mix = function (superclass) {
+let mix = (superclass) => new MixinBuilder(superclass);
 
-	return new MixinBuilder(superclass);
+```
+
+다소 생소해 보이는 위 코드를 ES3(or 5) Spec으로 바꾸면 다음과 같이 됩니다.
+
+```
+/* ES3(or 5) spec */
+Object.extend = Object.extend || function (obj1, obj2) {
+	for (var key in obj2) {
+		obj1[key] = obj2[key];
+	}
+	return obj1;
+};
+
+function MixinBuilder (superclass) {
+	this.superclass = superclass
+}
+MixinBuilder.prototype.with = function () {
+
+	var mixins = Array.prototype.slice.call(arguments),
+		inst = typeof this.superclass === "function"
+				? new this.superclass()
+				: {};
+
+	for (i = 0, len = mixins.length; i < len; i++) {
+		inst = Object.extend(inst, mixins[i]);
+	}
+
+	return inst;
 
 }
 
+function mix (superclass) {
+	return new MixinBuilder(superclass);
+}
+
 ```
+
+ES2015 Spec에 비해서 많이 지저분 합니다만, 어쩔 수 없습니다. 이것을 지금까지의 코드에 적용하면 다음과 같이 됩니다.
+
+
+```
+/* ES3(or 5) spec */
+
+Object.extend = Object.extend || function (obj1, obj2) {
+	for (var key in obj2) {
+		obj1[key] = obj2[key];
+	}
+	return obj1;
+};
+
+function MixinBuilder (superclass) {
+	this.superclass = superclass
+}
+MixinBuilder.prototype.with = function () {
+
+	var mixins = Array.prototype.slice.call(arguments),
+		inst = typeof this.superclass === "function"
+				? new this.superclass()
+				: {};
+
+	for (i = 0, len = mixins.length; i < len; i++) {
+		inst = Object.extend(inst, mixins[i]);
+	}
+
+	return inst;
+
+}
+
+function mix (superclass) {
+	return new MixinBuilder(superclass);
+}
+
+function Animal () {
+	this.name = null;
+	this.age = null;
+	console.log("Animal이 생성됩니다.");
+}
+Animal.prototype = mix().with({
+	breathe: function () {
+		console.log("숨을 쉽니다.");
+	},
+	walk: function () {
+		console.log("걷습니다.");
+	},
+	setName: function (name) {
+		this.name = name;
+	},
+	getName: function () {
+		return this.name;
+	},
+	setAge: function (age) {
+		this.age = age;
+	},
+	getAge: function () {
+		return this.age;
+	}
+});
+
+function Human () {}
+Human.prototype = mix(Animal).with({
+	speak: function () {
+		console.log("말을 합니다.");
+	}
+});
+
+// 인터페이스...
+var DogBehavior = {
+	bark: function () {
+		console.log("짖습니다.");
+	}
+};
+
+function Dog () {}
+Dog.prototype = mix(Animal).with(DogBehavior);
+
+function DogHuman () {}
+DogHuman.prototype = mix(Human).with(DogBehavior);
+
+/* test */
+var dogHuman1 = new DogHuman();
+dogHuman1.speak();	// 출력 - 말을 합니다.
+dogHuman1.bark();	// 출력 - 짖습니다.
+
+```
+
+오~ 미려해졌습니다. 이제 JS다워진 것 같습니다. 전 아직 내공이 약해서 이런 문법을 못만들어내는데... 정말 열심히 공부해야 할 것 같습니다. 
+
+이제 다시 문제의 ES2015 spec의 그 코드로 돌아와서보면 굉장히 생소한데, 그 이유는 아마 `arrow function` 때문 일 것입니다.
+
+## arrow function?
+
+
+
 
 
 
