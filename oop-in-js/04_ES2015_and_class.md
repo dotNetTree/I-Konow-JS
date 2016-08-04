@@ -664,7 +664,7 @@ class DogHuman extends DogBehaviorMixin(Human) {
 
 ## 문법설탕(1)
 
-현재 저희 짠 코드는 나타나지 않지만, mixins 대상이 2개 이상 되면 다음과 같이 지저분해집니다. 일단 코드를 보시겠습니다.
+현재 저희가 지금까지 작성한 코드에서는 나타나지 않지만, mixins 대상이 2개 이상 되면 다음과 같이 지저분해집니다. 일단 코드를 보시겠습니다.
 
 ```
 class Foo { }
@@ -687,7 +687,7 @@ class Bar extends mix(Foo).with(AMixin, BMixin, CMinxin) {
 
 ```
 
-와우! 가독성이 엄청 좋아졌습니다. base class를 Foo으로 하고 AMixin, BMixin, CMinxin을 인터페이스로 한 형태라고 그냥 알 수 있는 문법입니다. 게다가 미려하기까지합니다. 저는 이런 식의 아름다운 문법 만들어낼 수 있는게 바로 JS의 참 맛이라 생각합니다.
+와우! 가독성이 엄청 좋아졌습니다. base class를 Foo으로 하고 AMixin, BMixin, CMinxin을 인터페이스로 한 형태라고 그냥 알 수 있는 문법입니다. 게다가 미려하기까지합니다. 저는 JS의 참 맛은 이런 아름다운 문법을 만들었을 때 느낄 수 있는 것이라 생각합니다.
 
 이 아름다운 문법을 만들기 위해서는 다음과 같은 코드가 필요합니다.
 
