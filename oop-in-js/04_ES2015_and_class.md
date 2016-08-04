@@ -582,7 +582,8 @@ dogHuman1.bark();	// 출력 - 짖습니다.
 
 ...이건 다른 언어 경험자들이 봤을 때 굉장히 엽기적인 코드입니다. `extends` 대상을 어떠한 function의 return으로 받는 이런 형태는 Java Base의 개발자들에게 굉장한 스트레스를 안겨주기에 충분합니다. 
 
-그리고 실제 DogBehaviorMixin을 다음과 같이 바꾸어도 정상 동작합니다.
+## 약간의 테스트...
+재미있게도 실제 DogBehaviorMixin을 다음과 같이 바꾸어도 정상 동작합니다.
 
 ```
 /* ES2015 Spec */
@@ -670,7 +671,7 @@ class Foo { }
 class Bar extends CMinxin(BMixin(AMixin(Foo))) { }
 ```
 
-위 코드는 Foo를 base class로 하고 AMixin, BMixin, CMinxin을 인터페이스로 하는 코드 입니다. 굉장히 지저분 해짐을 알 수 있습니다.
+위 코드는 Foo를 base class로 하고 AMixin, BMixin, CMinxin을 인터페이스로 하는 코드 입니다. 굉장히 지저분해짐을 알 수 있습니다.
 
 이에 대한 제안으로 [Justin Fagnani](http://justinfagnani.com/author/justinfagnani/)의 블로그 내용을 소개해 드리겠습니다. 블로그 내용상으로 볼땐 Dart 언어의 `with` 키워드 처럼 mixins가 동작되도록 하는건데, 적용하면 문법이 이렇게 바뀝니다..
 
