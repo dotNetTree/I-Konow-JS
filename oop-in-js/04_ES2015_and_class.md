@@ -573,7 +573,7 @@ class DogHuman extends DogBehaviorMixin(Human) {
 }
 
 /* test */
-var dogHuman1 = new DogHuman();
+let dogHuman1 = new DogHuman();
 dogHuman1.speak();	// 출력 - 말을 합니다.
 dogHuman1.bark();	// 출력 - 짖습니다.
 		
@@ -931,16 +931,26 @@ let add = function (a, b) {
 add(100, 200);	// 출력 - 300
 ```
 
-이제 `function`, `{}`, `return` 을 삭제합니다. (여기까지 하면 일단 에러남!!!)
+이제 `function` 을 삭제합니다. (여기까지 하면 일단 에러남!!!)
 
 ```
-let add = (a, b) 	// Error!!
-	a + b;
+let add = (a, b) { 	// Error!!
+	return a + b;
+}
+
+add(100, 200);	
+```
+"(a, b)"와 "{" 사이에 `=>` 키워드를 넣어줍니다.
+
+```
+let add = (a, b) => {
+	return a + b;
+}
 
 add(100, 200);	
 ```
 
-"a + b;"를 위로 올리면서 `=>` 키워드를 붙여줍니다.
+중괄호({}) 내용이 한줄이면 중괄호도 삭제 가능합니다. 만약 그 한줄에 `return`이 라면 `return`도 삭제 가능합니다.(삭제 해야함!! 안하면 에러남!!)
 
 ```
 let add = (a, b) => a + b;
@@ -949,5 +959,259 @@ add(100, 200);	// 출력 - 300
 ```
 
 어떤가요? ^^ 참 쉽죠? 음... 이게 뭐야라고 생각하시는 분들이 계실텐데, 이건 문법이니 묻고 따지지 마시고 그냥 느끼시는게 정신건강상 이롭습니다.
+
+## 문법설탕(2)
+다시 mixins 문법 설탕으로 돌아오겠습니다.
+
+```
+/* ES2015 spec */
+
+class MixinBuilder {  
+
+  constructor(superclass) {
+    this.superclass = superclass;
+  }
+
+  with(...mixins) { 
+    return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+  }
+}
+
+let mix = (superclass) => new MixinBuilder(superclass);
+
+```
+
+이걸 위에서 배운 방법을 arrow function을 역으로 일반 function으로 변경해보겠습니다.
+
+
+```
+/* ES2015 spec */
+
+class MixinBuilder {  
+
+  constructor(superclass) {
+    this.superclass = superclass;
+  }
+
+  with(...mixins) { 
+    return mixins.reduce(function (c, mixin) { return mixin(c); }, this.superclass);
+  }
+}
+
+function mix (superclass) {
+	return new MixinBuilder(superclass);
+}
+
+```
+
+이렇게 됩니다. 이제 이해가 되시겠죠? 아직 안되시는 구문이 하나 있다고요? "...mixins" 이건 그냥 with function의 인자를 Array로 만들어주는 문법입니다. 
+
+이제 이 문법 설탕을 이용해서 ES2015 spec의 코드도 고쳐보겠습니다.
+
+
+```
+/* ES2015 Spec */
+
+class MixinBuilder {  
+
+  constructor(superclass) {
+    this.superclass = superclass;
+  }
+
+  with(...mixins) { 
+    return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+  }
+}
+
+let mix = (superclass) => new MixinBuilder(superclass);
+
+
+class Animal {
+
+	constructor () {
+		this.name = null;
+		this.age = null;
+		console.log("Animal이 생성됩니다.");
+	}
+
+	breathe () {
+		console.log("숨을 쉽니다.");
+	}
+
+	walk () {
+		console.log("걷습니다.");
+	}
+
+	setName (name) {
+		this.name = name;
+	}
+
+	getName () {
+		return this.name;
+	}
+
+	setAge (age) {
+		this.age = age;
+	}
+
+	getAge () {
+		return this.age;
+	}
+
+}
+
+class Human extends Animal {
+	speak () {
+		console.log("말을 합니다.");
+	}
+}
+
+var DogBehaviorMixin = function (Base) {
+	return class DogBehavior extends Base {
+		bark () {
+			console.log("짖습니다.");
+		}
+	}
+};
+
+class Dog extends mix(Animal).with(DogBehaviorMixin) {
+}
+
+class DogHuman extends mix(Human).with(DogBehaviorMixin) {
+
+}
+
+/* test */
+var dogHuman1 = new DogHuman();
+dogHuman1.speak();	// 출력 - 말을 합니다.
+dogHuman1.bark();	// 출력 - 짖습니다.
+			
+```
+
+마지막으로 `DogBehaviorMixin`을 위에서 익힌 `arrow function`으로 바꿔보도록 하겠습니다.
+
+`function` 키워드를 지우고 "(Base)"와 "{" 사이에 `=>` 키워드를 넣습니다. 
+
+```
+var DogBehaviorMixin = (Base) => {
+	return class DogBehavior extends Base {
+		bark () {
+			console.log("짖습니다.");
+		}
+	}
+};
+
+```
+
+그 다음으로 `중괄호({})`를 삭제하는데 중괄호 내용이 **`return`문 한줄**이기 때문에 `return`도 삭제합니다.
+
+```
+var DogBehaviorMixin = (Base) => class DogBehavior extends Base {
+	bark () {
+		console.log("짖습니다.");
+	}
+};
+```
+
+`DogBehavior`를 삭제하여 익명 class로 바꿉니다.
+
+```
+var DogBehaviorMixin = (Base) => class extends Base {
+	bark () {
+		console.log("짖습니다.");
+	}
+};
+```
+
+`DogBehaviorMixin`를 `DogBehavior`로 바꿉니다.
+
+```
+var DogBehavior = (Base) => class extends Base {
+	bark () {
+		console.log("짖습니다.");
+	}
+};
+```
+
+이것을 적용한 전체 코드는 다음과 같습니다.
+
+```
+/* ES2015 spec */
+
+class MixinBuilder {
+
+  constructor(superclass) {
+    this.superclass = superclass;
+  }
+
+  with(...mixins) {
+    return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+  }
+}
+
+let mix = (superclass) => new MixinBuilder(superclass);
+
+
+class Animal {
+
+	constructor () {
+		this.name = null;
+		this.age = null;
+		console.log("Animal이 생성됩니다.");
+	}
+
+	breathe () {
+		console.log("숨을 쉽니다.");
+	}
+
+	walk () {
+		console.log("걷습니다.");
+	}
+
+	setName (name) {
+		this.name = name;
+	}
+
+	getName () {
+		return this.name;
+	}
+
+	setAge (age) {
+		this.age = age;
+	}
+
+	getAge () {
+		return this.age;
+	}
+
+}
+
+class Human extends Animal {
+	speak () {
+		console.log("말을 합니다.");
+	}
+}
+
+// 인터페이스
+let DogBehavior = (Base) => class extends Base {
+	bark () {
+		console.log("짖습니다.");
+	}
+};
+
+class Dog extends mix(Animal).with(DogBehavior) {
+}
+
+class DogHuman extends mix(Human).with(DogBehavior) {
+
+}
+
+let dogHuman1 = new DogHuman();
+dogHuman1.speak();	// 출력 - 말을 합니다.
+dogHuman1.bark();	// 출력 - 짖습니다.
+
+```
+
+
 
 
