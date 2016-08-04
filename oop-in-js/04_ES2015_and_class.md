@@ -648,7 +648,7 @@ class DogHuman extends Human implements DogBehavior {
 
 }
 ```
-네, 꽤 깁니다. 하지만 어떤 클래스를 base로 하는지 확실하게 알 수 있고 어떤 부분이 인터페이스인지 확실하게 알 수 있습니다. 다시 저희가 짠 코드를 확인해보렊습니다.
+네, 꽤 깁니다. 하지만 어떤 클래스를 base로 하는지 확실하게 알 수 있고 어떤 부분이 인터페이스인지 확실하게 알 수 있습니다. 다시 저희가 짠 코드를 확인해보겠습니다.
 
 ```
 /* ES2015 Spec */
@@ -660,7 +660,7 @@ class DogHuman extends DogBehaviorMixin(Human) {
 
 ```
 
-미려하지 않습니다. 어느것이 base class인지 알기가 어렵습니다. 
+음...미려하지 않습니다. 어느것이 base class인지 알기가 어렵습니다. 
 
 ## 문법설탕(1)
 
