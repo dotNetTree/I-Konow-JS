@@ -661,13 +661,24 @@ class DogHuman extends DogBehaviorMixin(Human) {
 
 미려하지 않습니다. 어느것이 base class인지 알기가 어렵습니다. 
 
+## 문법설탕(1)
+
+현재 저희 짠 코드는 나타나지 않지만, mixins 대상이 2개 이상 되면 다음과 같이 지저분해집니다. 일단 코드를 보시겠습니다.
+
+```
+class Foo { }
+class Bar extends CMinxin(BMixin(AMixin(Foo))) { }
+```
+
+위 코드는 Foo를 base class로 하고 AMixin, BMixin, CMinxin을 인터페이스로 하는 코드 입니다. 굉장히 지저분 해짐을 알 수 있습니다.
+
 이에 대한 제안으로 [Justin Fagnani](http://justinfagnani.com/author/justinfagnani/)의 블로그 내용을 소개해 드리겠습니다. 블로그 내용상으로 볼땐 Dart 언어의 `with` 키워드 처럼 mixins가 동작되도록 하는건데, 적용하면 문법이 이렇게 바뀝니다..
 
 
 ```
 /* ES2015 Spec */
-
-class DogHuman extends mix(Human).with(DogBehavior) {
+class Foo { }
+class Bar extends mix(Foo).with(AMixin, BMixin, CMinxin) {
 
 	...
 	
@@ -675,7 +686,7 @@ class DogHuman extends mix(Human).with(DogBehavior) {
 
 ```
 
-와우! 가독성이 엄청 좋아졌습니다. base class를 Human으로 하고 DogBehavior를 인터페이스로 한 형태라고 짐작할 수 있는 문법입니다. 게다가 미려하기까지합니다. 저는 이런 식의 아름다운 문법 만들어낼 수 있는게 바로 JS의 참 맛이라 생각합니다.
+와우! 가독성이 엄청 좋아졌습니다. base class를 Foo으로 하고 AMixin, BMixin, CMinxin을 인터페이스로 한 형태라고 그냥 알 수 있는 문법입니다. 게다가 미려하기까지합니다. 저는 이런 식의 아름다운 문법 만들어낼 수 있는게 바로 JS의 참 맛이라 생각합니다.
 
 이 아름다운 문법을 만들기 위해서는 다음과 같은 코드가 필요합니다.
 
@@ -822,7 +833,7 @@ dogHuman1.bark();	// 출력 - 짖습니다.
 
 오~ 미려해졌습니다. 이제 JS다워진 것 같습니다. 전 아직 내공이 약해서 이런 문법을 못만들어내는데... 정말 열심히 공부해야 할 것 같습니다. 
 
-이제 다시 문제의 ES2015 spec의 그 코드로 돌아와서보면 굉장히 생소한데, 그 이유는 아마 `arrow function` 때문 일 것입니다.
+이제 다시 문제의 ES2015 spec의 그 코드로 돌아와서보면 굉장히 생소한데, 그 이유는 아마 `arrow function` 때문일 것입니다.
 
 ## Arrow Function?
 `arrow function`은 ES2015 spec부터 사용할 수 있는 **익명함수**입니다. 그렇기 때문에 꼭 arrow function을 사용하지 않아도 되는데, 다음과 같은 잇점이 있기 때문에 익혀두시는게 좋습니다.
