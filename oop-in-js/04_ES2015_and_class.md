@@ -824,10 +824,130 @@ dogHuman1.bark();	// 출력 - 짖습니다.
 
 이제 다시 문제의 ES2015 spec의 그 코드로 돌아와서보면 굉장히 생소한데, 그 이유는 아마 `arrow function` 때문 일 것입니다.
 
-## arrow function?
+## Arrow Function?
+`arrow function`은 ES2015 spec부터 사용할 수 있는 **익명함수**입니다. 그렇기 때문에 꼭 arrow function을 사용하지 않아도 되는데, 다음과 같은 잇점이 있기 때문에 익혀두시는게 좋습니다.
 
+	1. 경량화된 function이다.
+	2. 간결하다.
 
+그간 사용하던 function은 (`function` 키워드를 사용한) prototype 확장을 하던 하지 않던 prototype을 가지고 있었습니다. 즉, 그만큼 메모리를 더 썻다는 것입니다. 뿐만아니라, `this` 키워드 콘텍스트 객체(context object)를 가르키기 때문에 이를 뒤트는 코드(.bind(this))를 강제로 넣어줘야 하는 문제가 있었습니다. arrow function을 사용하게 되면 arrow function을 감싸고 있는 스코프(scope)내의 this가 arrow function 내부의 this가 되므로 뒤트는 코드를 넣지 않아도 됩니다. 
 
+일단, ES3(or 5) spec의 예시 코드를 보시겠습니다.
 
+```
+/* ES3(or 5) spec */
+function KK () {
+
+}
+KK.prototype.test = function () {
+	var oo = {
+		objTest: function () {
+			console.log(this);
+		}
+	}
+	oo.objTest();
+	
+	function funcTest () {
+		console.log(this);
+	}
+
+	funcTest();
+}
+
+var kk = new KK();
+kk.test();
+
+```
+
+위 코드의 출력값은 무엇일까요? 아시는 분은 아시겠지만, oo 객체와 Window 객체가 출력됩니다. 일반적으로 제가 만나본 개발자들은 KK class의 인스턴스인 kk객체가 나올 것이라고 생각했습니다. 저 또한 JS를 (지금도 잘 모르지만) 잘 모를 땐 kk가 나올 것이라고 생각했으니까요...
+
+이것을 저희들이 원하는 형태로 사용하려면 다음과 같이 코드를 바꿔야 합니다.
+
+```
+/* ES3(or 5) spec */
+function KK () {
+
+}
+KK.prototype.test = function () {
+	var oo = {
+		objTest: function () {
+			console.log(this);
+		}.bind(this)
+	}
+	oo.objTest();
+	
+	function funcTest () {
+		console.log(this);
+	}
+
+	funcTest.bind(this)();
+}
+
+var kk = new KK();
+kk.test();
+
+```
+
+이것을 arrow function으로 바꾸면 다음과 같이 됩니다.
+
+```
+/* ES2015 spec */
+function KK () {
+
+}
+KK.prototype.test = function () {
+	let oo = {
+		objTest: () => console.log(this)
+	}
+	oo.objTest();
+
+	let funcTest = () => console.log(this);
+	funcTest();
+}
+
+var kk = new KK();
+kk.test();
+
+```
+
+출력은 저희들이 기대한 대로 kk 객체가 두번 출력됩니다. 
+
+자, 이제 일반 function을 arrow function으로 바꾸는 방법을 알아 보겠습니다.
+
+```
+function add (a, b) {
+	return a + b;
+}
+add(100, 200);	// 출력 - 300
+
+```
+
+간단한 합 연산을 하는 function 입니다. 먼저 add를 변수로 바꿉니다.
+
+```
+let add = function (a, b) {
+	return a + b;
+}
+add(100, 200);	// 출력 - 300
+```
+
+이제 `function`, `{}`, `return` 을 삭제합니다. (여기까지 하면 일단 에러남!!!)
+
+```
+let add = (a, b) 	// Error!!
+	a + b;
+
+add(100, 200);	
+```
+
+"a + b;"를 위로 올리면서 `=>` 키워드를 붙여줍니다.
+
+```
+let add = (a, b) => a + b;
+
+add(100, 200);	// 출력 - 300
+```
+
+어떤가요? ^^ 참 쉽죠? 음... 이게 뭐야라고 생각하시는 분들이 계실텐데, 이건 문법이니 묻고 따지지 마시고 그냥 느끼시는게 정신건강상 이롭습니다.
 
 
