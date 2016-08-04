@@ -29,7 +29,6 @@
 ![그림 4](04_ES2015_and_class/3.png)
 
 마지막으로 3영역 중 가장 아랫부분은 class가 할 수 있는 `행위(methods)`를 정의하는 영역입니다. 메소드 명을 적은 후 괄호(())를 붙여줍니다. setName이나 setAge와 같이 괄호 안에 무언가가 적혀 있는데, 이를 **인자**(arguments 또는 parameter)라 부르며 실제 메소드가 동작할 때 입력 받아야 하는 내용입니다. 또 getName이나 getAge와 같이 괄호 뒤에 콜론(:)이 붙어 있는 경우도 있는데, 이는 메소드가 실행되면 반환해야 하는 값의 타입을 기술한 것입니다. 
-<br/>
 
 ## 그린 그림을 코드로 옮기기(1)
 
@@ -120,7 +119,6 @@ ES2015에서는 언어차원에서 `class`를 지원하도록 변경 되어 타�
 
 그리고, Animal class를 상속한 Human class는 Animal class가 가지고 있는 모든 속성과 메소드를 물려받습니다. ("물려받는다"는 표현이 어색할 수도 있는데, Human class에 따로 코드를 넣지 않아도 Animal class 처럼 동작한다는 의미임.)
 
-<br/>
 
 ## 그린 그림을 코드로 옮기기(2)
 다시 위 class diagram에 기초한 코드를 ES3(or 5) spec으로 표현하면 다음과 같습니다.
@@ -306,7 +304,7 @@ class Dog extends Animal {
 ```
 
 ## 특수화(Specialization)
-현재 상태로 보면 인간은 동`과 동일합니다. 인간이란 일반적인 동물과 비교하여 **특별한 어떠한 행위를 할 수 있기 때문에 인간**이라 칭할 수 있습니다. 자, 어떤게 있을까요? 
+현재 상태로 보면 인간은 동물과 동일합니다. 인간이란 일반적인 동물과 비교하여 **특별한 어떠한 행위를 할 수 있기 때문에 인간**이라 칭할 수 있습니다. 자, 어떤게 있을까요? 
 
 저는 **"말을 할 수 있다(speak)"**라는 행위를 하기 때문에 인간이라 생각합니다. 이것을 class diagram으로 표현해보겠습니다.
 
@@ -435,7 +433,7 @@ class Dog extends Animal {
 
 ![그림 11](04_ES2015_and_class/10.png)
 
-위 그림에서 DogBehavior라는 이름으로 된 사각형을 **인터페이스(interface)**라 부릅니다. 인터페이스(interface)는 속성(attribute)을 가지지 않고 **오직 행위(method)**만을 가지며, 구현코드를 가지지않고 정의만 합니다.(java같은 언어는 말이죠...) 그래서 개(Dog) class가 bark를 구현하게 되고, 이를 가르켜 **"인터페이스 DogBehavior를 Dog class가 실체화 하였다."**라고 합니다.
+위 그림에서 DogBehavior라는 이름으로 된 사각형을 **인터페이스(interface)**라 부릅니다. 인터페이스(interface)는 속성(attribute)을 가지지 않고 **오직 행위(method)**만을 가지며, 구현코드를 가지지않고 정의만 합니다.(java같은 언어는 말이죠...) 그래서 개(Dog) class가 bark를 구현하게 되고, 이를 가르켜 **"인터페이스 DogBehavior를 Dog class가 실체화(구현)하였다."**라고 합니다.
 
 같은 사고(思考)로 개인간 또한 인터페이스를 실체화 시켜주면 됩니다. 도식으로 표현하면 다들 예상하시는 것처럼 다음과 같이 됩니다.
 
@@ -451,7 +449,9 @@ ES3(or 5)에서 위 class diagram 지난번에 소개한 Object.extend를 활용
 
 Object.extend = Object.extend || function (obj1, obj2) {
 	for (var key in obj2) {
-		obj1[key] = obj2[key];
+		if (obj2.hasOwnProperty(key)) {
+			obj1[key] = obj2[key];
+		}
 	}
 	return obj1;
 };
@@ -671,7 +671,7 @@ class Foo { }
 class Bar extends CMinxin(BMixin(AMixin(Foo))) { }
 ```
 
-위 코드는 Foo를 base class로 하고 AMixin, BMixin, CMinxin을 인터페이스로 하는 코드 입니다. 굉장히 지저분해짐을 알 수 있습니다.
+위 코드는 Foo를 base class로 하고 AMixin, BMixin, CMinxin을 인터페이스로 하는 코드 입니다. 데코레이터 패턴처럼 되어있어서 굉장히 지저분해짐을 알 수 있습니다.
 
 이에 대한 제안으로 [Justin Fagnani](http://justinfagnani.com/author/justinfagnani/)의 블로그 내용을 소개해 드리겠습니다. 블로그 내용상으로 볼땐 Dart 언어의 `with` 키워드 처럼 mixins가 동작되도록 하는건데, 적용하면 문법이 이렇게 바뀝니다..
 
@@ -715,7 +715,9 @@ let mix = (superclass) => new MixinBuilder(superclass);
 /* ES3(or 5) spec */
 Object.extend = Object.extend || function (obj1, obj2) {
 	for (var key in obj2) {
-		obj1[key] = obj2[key];
+		if (obj2.hasOwnProperty(key)) {
+			obj1[key] = obj2[key];
+		}
 	}
 	return obj1;
 };
@@ -752,7 +754,9 @@ ES2015 Spec에 비해서 많이 지저분 합니다만, 어쩔 수 없습니다.
 
 Object.extend = Object.extend || function (obj1, obj2) {
 	for (var key in obj2) {
-		obj1[key] = obj2[key];
+		if (obj2.hasOwnProperty(key)) {
+			obj1[key] = obj2[key];
+		}
 	}
 	return obj1;
 };
@@ -873,7 +877,7 @@ kk.test();
 
 위 코드의 출력값은 무엇일까요? 아시는 분은 아시겠지만, oo 객체와 Window 객체가 출력됩니다. 일반적으로 제가 만나본 개발자들은 KK class의 인스턴스인 kk객체가 나올 것이라고 생각했습니다. 저 또한 JS를 (지금도 잘 모르지만) 잘 모를 땐 kk가 나올 것이라고 생각했으니까요...
 
-이것을 저희들이 원하는 형태로 사용하려면 다음과 같이 코드를 바꿔야 합니다.
+이것을 저희들이 원하는 형태로 사용하려면 다음과 같이 코드를 바꿔야 합니다. (단, ES3 에서는 Function.prototype.bind()에 대한 Polyfill이 필요함.)
 
 ```
 /* ES3(or 5) spec */
@@ -899,6 +903,7 @@ var kk = new KK();
 kk.test();
 
 ```
+이런 식으로 바로 사용하지 못하고, bind를 넣어줘야 합니다. 
 
 이것을 arrow function으로 바꾸면 다음과 같이 됩니다.
 
@@ -922,9 +927,9 @@ kk.test();
 
 ```
 
-출력은 저희들이 기대한 대로 kk 객체가 두번 출력됩니다. 
+bind를 하지 않았음에도 불구하고 출력은 저희들이 기대한 대로 kk 객체가 두번 출력됩니다. 
 
-자, 이제 일반 function을 arrow function으로 바꾸는 방법을 알아 보겠습니다.
+자, 이번엔 일반 function을 arrow function으로 바꾸는 방법을 알아 보겠습니다.
 
 ```
 function add (a, b) {
@@ -939,7 +944,7 @@ add(100, 200);	// 출력 - 300
 ```
 let add = function (a, b) {
 	return a + b;
-}
+};
 add(100, 200);	// 출력 - 300
 ```
 
@@ -948,7 +953,7 @@ add(100, 200);	// 출력 - 300
 ```
 let add = (a, b) { 	// Error!!
 	return a + b;
-}
+};
 
 add(100, 200);	
 ```
@@ -957,7 +962,7 @@ add(100, 200);
 ```
 let add = (a, b) => {
 	return a + b;
-}
+};
 
 add(100, 200);	
 ```
@@ -1100,7 +1105,7 @@ dogHuman1.bark();	// 출력 - 짖습니다.
 			
 ```
 
-마지막으로 `DogBehaviorMixin`을 위에서 익힌 `arrow function`으로 바꿔보도록 하겠습니다.
+마지막으로 DogBehaviorMixin을 위에서 익힌 `arrow function`으로 바꿔보도록 하겠습니다.
 
 `function` 키워드를 지우고 "(Base)"와 "{" 사이에 `=>` 키워드를 넣습니다. 
 
@@ -1224,6 +1229,8 @@ dogHuman1.bark();	// 출력 - 짖습니다.
 
 ```
 
+## 마무리
+이것으로 ES2015의 class와 UML의 class diagram에 대한 약간의 지식... 그리고, mixins의 문법설탕에 대해서도 알아봤습니다. 다음에는 어떤 주제로 글을 쓸지 모르겠습니다만, 또 뵙도록 하겠습니다. 
 
-
+읽어주셔서 감사합니다.
 
