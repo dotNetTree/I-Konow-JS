@@ -634,7 +634,7 @@ ff.huk();
 
 네... 이거 동작합니다. 이게 chrome에서만 동작하는 것인지는 더 확인 해봐야겠지만, 여기까지 해본 결과 얻을 수 있는 결론은 (ES2015를 집중적으로 하고 계시는 다른 JS개발자들이 늘 이야기하는...) 
 
-**"`class`,`extends`는 그냥 ES5때 사용하던 사용하던 mixins의 문법 설탕(syntatic sugar)이다."**
+**"`class`,`extends`는 그냥 ES5때 사용하던 사용하던 Prototype 확장의 문법 설탕(syntatic sugar)이다."**
 
 입니다.
 
